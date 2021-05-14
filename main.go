@@ -57,6 +57,8 @@ func main() {
 	}
 }
 
+// Handles RCON connections. Commands writtern to connection will be piped to stdin of the running bedrock server.
+// Connections will be kept open until the client closes or an error occurs writing to bedrock server stdin pipe
 func handleConenction(conn rcon.RCONServerConn, log *zap.SugaredLogger, password string, stdin io.WriteCloser) {
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -75,20 +77,20 @@ func handleConenction(conn rcon.RCONServerConn, log *zap.SugaredLogger, password
 			if err := conn.RespCmd(err.Error()); err != nil {
 				log.Debug(err)
 			}
-			break
+			return
 		}
 
 		if _, err := stdin.Write([]byte(cmd + "\n")); err != nil {
 			log.Debug(err)
 			if err := conn.RespCmd("command failed"); err != nil {
 				log.Debug(err)
-				break
 			}
+			return
 		}
 
 		if err := conn.RespCmd(cmd + " command recieved"); err != nil {
 			log.Debug(err)
-			break
+			return
 		}
 	}
 
