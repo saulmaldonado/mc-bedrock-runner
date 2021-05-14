@@ -13,3 +13,6 @@ build:
 
 clean:
 	@rm -rf build
+
+zip:
+	tar -czvf $(BINARY).tar.gz -C build $(BINARY)
