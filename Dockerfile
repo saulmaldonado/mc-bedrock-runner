@@ -12,7 +12,9 @@ RUN make build
 FROM ubuntu
 
 RUN apt-get update && \
-  apt install curl
+  apt install -y \
+  curl \
+  unzip
 
 WORKDIR /data
 VOLUME [ "/data" ]
@@ -20,6 +22,9 @@ VOLUME [ "/data" ]
 COPY --from=build /mc-bedrock-runner/build/mc-bedrock-runner .
 
 RUN curl -fsSOL https://minecraft.azureedge.net/bin-linux/bedrock-server-1.16.221.01.zip && unzip bedrock-server-1.16.221.01.zip
+
+RUN chmod +x bedrock_server
+
 ENV LD_LIBRARY_PATH=.
 
 ENTRYPOINT ["./mc-bedrock-runner"]
