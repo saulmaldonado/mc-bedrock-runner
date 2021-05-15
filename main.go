@@ -36,6 +36,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// binds mc-becrock-runner stdin to bedrock server's stdin
+	go func() {
+		io.Copy(stdin, os.Stdin)
+	}()
+
 	if err := cmd.Start(); err != nil {
 		log.Fatal(err)
 	}
