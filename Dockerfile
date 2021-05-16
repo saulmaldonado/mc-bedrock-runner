@@ -19,13 +19,17 @@ RUN apt-get update && \
 WORKDIR /data
 VOLUME [ "/data" ]
 
-RUN curl -fsSOL https://minecraft.azureedge.net/bin-linux/bedrock-server-1.16.221.01.zip && unzip bedrock-server-1.16.221.01.zip
+RUN curl -fsSOL https://minecraft.azureedge.net/bin-linux/bedrock-server-1.16.221.01.zip && \
+  unzip bedrock-server-1.16.221.01.zip && \
+  rm bedrock-server-1.16.221.01.zip
 
 COPY --from=build /mc-bedrock-runner/build/mc-bedrock-runner .
 
 RUN chmod +x bedrock_server
 
+RUN ln -s $PWD/bedrock_server /usr/local/bin/bedrock_server
+
 ENV LD_LIBRARY_PATH=.
 
 ENTRYPOINT ["./mc-bedrock-runner"]
-CMD ["./bedrock_server"]
+CMD ["bedrock_server"]
